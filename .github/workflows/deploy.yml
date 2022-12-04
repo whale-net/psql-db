@@ -44,7 +44,7 @@ jobs:
           script: |
             cd psql-db
             git fetch origin
-            git checkout ${{ github.sha }}
+            git checkout ${{ github.ref }}
 
       - name: run docker compose on server
         uses: appleboy/ssh-action@master
