@@ -34,8 +34,14 @@ jobs:
       #     GITHUB_CONTEXT: ${{ toJson(github) }}
       #   run: echo "$GITHUB_CONTEXT"
 
+      - name: init
+        run: |
+          mkdir $GITHUB_WORKSPACE/dist
+
       - name: checkout repo
         uses: actions/checkout@v3
+        with:
+          path: $GITHUB_WORKSPACE/dist
 
       - name : rsync repo with server
         env:
@@ -44,7 +50,7 @@ jobs:
           key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
           PORT: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
         run:
-            rsync -avz -e "ssh -p $PORT -o StrictHostKeyChecking=no" . $USERNAME@$HOST:~/test
+            rsync -avz -e "ssh -p $PORT -o StrictHostKeyChecking=no" $GITHUB_WORKSPACE/dist $USERNAME@$HOST:~/test
 
 
       
