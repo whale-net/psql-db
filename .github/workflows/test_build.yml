@@ -25,6 +25,12 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
+      - name: set environment variables
+        run: |
+          cp .env.example .env
+          export $(cat .env | xargs)
+          export POSTGRES_PASSWORD=githubaction
+
       - name: pull docker images
         run: docker compose pull
 
