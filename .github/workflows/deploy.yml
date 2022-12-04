@@ -29,9 +29,9 @@ jobs:
     env:
       ACTION_IDENTIFIER: ${{ github.run_id }}_${{ github.run_number }}_${{ github.run_attempt }}
       REMOTE_ACTION_DIR: ./.github-actions-temp
-      REMOTE_DIST_DIR: ${{ env.REMOTE_ACTION_DIR }}/dist/${{ env.ACTION_IDENTIFIER }}
-      REMOTE_DIST_ARCHIVE_DIR: ${{ env.REMOTE_ACTION_DIR }}/archive/dist/
-      REMOTE_DIST_ARCHIVE_TAR_FILE: ${{ env.REMOTE_DIST_ARCHIVE_DIR }}/${{ env.ACTION_IDENTIFIER }}.tar.gz
+      REMOTE_DIST_DIR: $REMOTE_ACTION_DIR/dist/$ACTION_IDENTIFIER
+      REMOTE_DIST_ARCHIVE_DIR: $REMOTE_ACTION_DIR/archive/dist/
+      REMOTE_DIST_ARCHIVE_TAR_FILE: $REMOTE_DIST_ARCHIVE_DIR/$ACTION_IDENTIFIER.tar.gz
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     
