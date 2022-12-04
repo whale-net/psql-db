@@ -28,24 +28,12 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # - name: Install SSH Key
-      #   uses: shimataro/ssh-key-action@v2
-      #   with:
-      #     key: ${{ secrets.SSH_PRIVATE_KEY }} 
-      #     # https://zellwk.com/blog/github-actions-deploy/
-      #     # probably a cleaner solution, but using this for now
-      #     known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
-
-      # - name: Adding Known Hosts
-      #   run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-
       - name: executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.WHALE_NET_PROD_IP }}
           username: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
           key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
-          #password: ${{ secrets.WHALENET_PROD_PASSWORD }}
           port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
           script: |
             echo 'hello world'
