@@ -1,0 +1,2 @@
+
+create index ix_test_data_extra_comments_test_data_id on flyway_test.test_data_extra_comments(test_data_id);
