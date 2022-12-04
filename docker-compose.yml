@@ -1,0 +1,14 @@
+version: '1'
+services:
+  flyway:
+    image: flyway/flyway
+    command: -url=jdbc:mysql://db -schemas=myschema -user=root -password=P@ssw0rd -connectRetries=60 migrate
+    volumes:
+      - .:/flyway/sql
+    depends_on:
+      - db
+  psql:
+    image: postgres:14.6
+    restart: always
+    ports:
+      - 11420:11420
