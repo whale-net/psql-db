@@ -8,16 +8,11 @@ on:
   push:
     branches: [ "main" ]
   # todo remove this after testing
-  pull_request:
-    branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
-# TODO
-# either move back to private repo and setup vault management (no worry aobut public, ask connor his thoughts)
-  # free has more control over brnach which will make deployments better
-# keep open and free and use ssh key with better protections, likely
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
