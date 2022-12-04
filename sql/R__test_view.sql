@@ -11,3 +11,6 @@ AS
     ;
 
 -- although apparently if you want to rename a column, it will have to be altered? I'm not sure how to handle that yet
+
+-- after a bit of testing, maybe we should explicitly drop the view and then create? create or replace doesn't like renaming I guess
+-- unsure if that is best practices though, will figure out when we need to
