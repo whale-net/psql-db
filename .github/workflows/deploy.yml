@@ -88,6 +88,7 @@ jobs:
           envs: REMOTE_DIST_DIR
           # double 
           script: |
+            echo $REMOTE_ACTION_DIR
             mkdir -p ~/psql-db
             rsync -a $REMOTE_DIST_DIR/psql-db/psql-db ~/psql-db
 
