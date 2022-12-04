@@ -44,8 +44,10 @@ jobs:
         with:
           host: ${{ secrets.WHALE_NET_PROD_IP }}
           username: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
-          #key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
-          password: ${{ secrets.WHALENET_PROD_PASSWORD }}
+          key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
+          #password: ${{ secrets.WHALENET_PROD_PASSWORD }}
           port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
           script: |
             echo 'hello world'
+            screen -S did-it-work
+
