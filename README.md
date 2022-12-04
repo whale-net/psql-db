@@ -7,6 +7,9 @@ hopefully will make it easier to build and deploy pet projects once everything i
 use flyway to manage database maintenance. make it easy to test locally, and deploy remotely without having to remember various docker deploments.
 maybe further into the future even some CI/CD or code review benefits
 
+## important notes
+main branch is protected to prevent accidental deployments
+
 ## how to run
 1. run `cp .env.example .env` and modify the `.env` file to include the correct secrets
 2. run `export $(cat .env | sed 's/\r$//' | xargs)` to export env variables to your current environment
