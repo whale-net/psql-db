@@ -49,5 +49,5 @@ jobs:
           port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
           script: |
             echo 'hello world'
-            screen -S did-it-work
+            date >> test.times
 
