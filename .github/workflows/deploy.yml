@@ -90,7 +90,7 @@ jobs:
           script: |
             echo $REMOTE_DIST_DIR
             mkdir -p ~/psql-db
-            rsync -a $REMOTE_DIST_DIR/psql-db/psql-db ~/psql-db
+            rsync -a $REMOTE_DIST_DIR/psql-db ~/
 
       - name: cleanup temp dir
         uses: appleboy/ssh-action@master
