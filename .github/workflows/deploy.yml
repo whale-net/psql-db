@@ -72,6 +72,19 @@ jobs:
           script: |
             mkdir -p ~/psql-db
             rsync -a --exclude '.git' $REMOTE_DIST_DIR/psql-db ~/
+      
+      - name: run docker compose on server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.WHALE_NET_PROD_IP }}
+          username: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
+          key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
+          # unsure if chmod is good idea, but whatever
+          script: |
+            cd psql-db
+            chmod +x ./scripts/deploy
+            ./scripts/deploy
 
       - name: cleanup temp dir
         uses: appleboy/ssh-action@master
@@ -87,16 +100,5 @@ jobs:
             tar -cvzf $REMOTE_DIST_ARCHIVE_TAR_FILE $REMOTE_DIST_DIR
             rm -rf $REMOTE_DIST_DIR
 
-      # - name: run docker compose on server
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{ secrets.WHALE_NET_PROD_IP }}
-      #     username: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
-      #     key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
-      #     port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
-      #     # unsure if chmod is good idea, but whatever
-      #     script: |
-      #       cd psql-db
-      #       chmod +x ./scripts/deploy
-      #       ./scripts/deploy
+      
 
