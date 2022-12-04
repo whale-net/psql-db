@@ -83,7 +83,7 @@ jobs:
           envs: REMOTE_DIST_DIR, REMOTE_DIST_ARCHIVE_DIR, REMOTE_DIST_ARCHIVE_TAR_FILE
           script: |
             mkdir -p $REMOTE_DIST_ARCHIVE_DIR
-            tar -cvzf $REMOTE_DIST_DIR $REMOTE_DIST_ARCHIVE_TAR_FILE
+            tar -cvzf $REMOTE_DIST_ARCHIVE_TAR_FILE $REMOTE_DIST_DIR
 
       # - name: run docker compose on server
       #   uses: appleboy/ssh-action@master
