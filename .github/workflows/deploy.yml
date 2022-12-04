@@ -29,7 +29,7 @@ jobs:
     env:
       ACTION_IDENTIFIER: ${{ github.run_id }}_${{ github.run_number }}_${{ github.run_attempt }}
       REMOTE_ACTION_DIR: ./.github-actions-temp
-      REMOTE_DIST_DIR: $REMOTE_ACTION_DIR/dist/$ACTION_IDENTIFIER
+      REMOTE_DIST_DIR: ${{ env.REMOTE_ACTION_DIR}}/dist/${{ env.ACTION_IDENTIFIER }}
       REMOTE_DIST_ARCHIVE_DIR: $REMOTE_ACTION_DIR/archive/dist/
       REMOTE_DIST_ARCHIVE_TAR_FILE: $REMOTE_DIST_ARCHIVE_DIR/$ACTION_IDENTIFIER.tar.gz
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -58,9 +58,7 @@ jobs:
       #     PORT: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
       #   run:
       #       rsync -avz -e "ssh -p $PORT -o StrictHostKeyChecking=no" $GITHUB_WORKSPACE/dist $USERNAME@$HOST:~/test
-
-      # pull repo on server vs github server to save bandwidth/storage
-      - name: pull repo on server
+      - name: test
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.WHALE_NET_PROD_IP }}
@@ -68,41 +66,52 @@ jobs:
           key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
           port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
           envs: REMOTE_DIST_DIR
-          # unsure if checkout is too much
-          script: |
-            echo $REMOTE_DIST_DIR
-            mkdir -p $REMOTE_DIST_DIR
-            cd $REMOTE_DIST_DIR
-            git clone git@github.com.whalenet.psql-db:whale-net/psql-db.git
-            cd psql-db
-            git fetch origin
-            git checkout ${{ github.event.after }}
+          script: echo $REMOTE_DIST_DIR
 
-      - name: copy files over
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.WHALE_NET_PROD_IP }}
-          username: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
-          key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
-          port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
-          envs: REMOTE_DIST_DIR
-          # double 
-          script: |
-            echo $REMOTE_ACTION_DIR
-            mkdir -p ~/psql-db
-            rsync -a $REMOTE_DIST_DIR/psql-db/psql-db ~/psql-db
+      # # pull repo on server vs github server to save bandwidth/storage
+      # - name: pull repo on server
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.WHALE_NET_PROD_IP }}
+      #     username: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
+      #     key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
+      #     port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
+      #     envs: REMOTE_DIST_DIR
+      #     # unsure if checkout is too much
+      #     script: |
+      #       echo $REMOTE_DIST_DIR
+      #       mkdir -p $REMOTE_DIST_DIR
+      #       cd $REMOTE_DIST_DIR
+      #       git clone git@github.com.whalenet.psql-db:whale-net/psql-db.git
+      #       cd psql-db
+      #       git fetch origin
+      #       git checkout ${{ github.event.after }}
 
-      - name: cleanup temp dir
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.WHALE_NET_PROD_IP }}
-          username: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
-          key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
-          port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
-          envs: REMOTE_DIST_DIR, REMOTE_DIST_ARCHIVE_DIR, REMOTE_DIST_ARCHIVE_TAR_FILE
-          script: |
-            mkdir -p $REMOTE_DIST_ARCHIVE_DIR
-            tar -cvzf $REMOTE_DIST_DIR $REMOTE_DIST_ARCHIVE_TAR_FILE
+      # - name: copy files over
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.WHALE_NET_PROD_IP }}
+      #     username: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
+      #     key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
+      #     port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
+      #     envs: REMOTE_DIST_DIR
+      #     # double 
+      #     script: |
+      #       echo $REMOTE_ACTION_DIR
+      #       mkdir -p ~/psql-db
+      #       rsync -a $REMOTE_DIST_DIR/psql-db/psql-db ~/psql-db
+
+      # - name: cleanup temp dir
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.WHALE_NET_PROD_IP }}
+      #     username: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
+      #     key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
+      #     port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
+      #     envs: REMOTE_DIST_DIR, REMOTE_DIST_ARCHIVE_DIR, REMOTE_DIST_ARCHIVE_TAR_FILE
+      #     script: |
+      #       mkdir -p $REMOTE_DIST_ARCHIVE_DIR
+      #       tar -cvzf $REMOTE_DIST_DIR $REMOTE_DIST_ARCHIVE_TAR_FILE
         
 
       # # repo assumed cloned, otherwise login and clone first time
