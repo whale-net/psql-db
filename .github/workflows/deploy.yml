@@ -1,0 +1,99 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Deploy
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  # todo remove this after testing
+  # pull_request:
+  #   branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  deploy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    env:
+      # todo can I reuse instead of copy paste?
+      #ACTION_IDENTIFIER: ${{ github.run_id }}_${{ github.run_number }}_${{ github.run_attempt }}
+      REMOTE_DIST_DIR: ./.github-actions-temp/dist/${{ github.run_id }}_${{ github.run_number }}_${{ github.run_attempt }}
+      REMOTE_DIST_ARCHIVE_DIR: ./.github-actions-temp/archive/dist
+      REMOTE_DIST_ARCHIVE_TAR_FILE: ./.github-actions-temp/archive/dist/${{ github.run_id }}_${{ github.run_number }}_${{ github.run_attempt }}.tar.gz
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    
+      # hopefully this doesn't expose anything :?
+      # - name: Dump GitHub context
+      #   env:
+      #     GITHUB_CONTEXT: ${{ toJson(github) }}
+      #   run: echo "$GITHUB_CONTEXT"
+
+      # pull repo on server vs github server to save bandwidth/storage
+      - name: pull repo on server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.WHALE_NET_PROD_IP }}
+          username: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
+          key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
+          envs: REMOTE_DIST_DIR
+          # unsure if checkout is too much
+          script: |
+            echo $REMOTE_DIST_DIR
+            mkdir -p $REMOTE_DIST_DIR
+            cd $REMOTE_DIST_DIR
+            git clone git@github.com.whalenet.psql-db:whale-net/psql-db.git
+            cd psql-db
+            git fetch origin
+            git checkout ${{ github.event.after }}
+
+      - name: copy files over
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.WHALE_NET_PROD_IP }}
+          username: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
+          key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
+          envs: REMOTE_DIST_DIR
+          # double 
+          script: |
+            mkdir -p ~/psql-db
+            rsync -a --exclude '.git' $REMOTE_DIST_DIR/psql-db ~/
+      
+      - name: run docker compose on server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.WHALE_NET_PROD_IP }}
+          username: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
+          key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
+          # unsure if chmod is good idea, but whatever
+          script: |
+            cd psql-db
+            chmod +x ./scripts/deploy
+            ./scripts/deploy
+
+      - name: cleanup temp dir
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.WHALE_NET_PROD_IP }}
+          username: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
+          key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
+          envs: REMOTE_DIST_DIR, REMOTE_DIST_ARCHIVE_DIR, REMOTE_DIST_ARCHIVE_TAR_FILE
+          # hopefulyl this rm-rf will never bite us :)
+          script: |
+            mkdir -p $REMOTE_DIST_ARCHIVE_DIR
+            tar -cvzf $REMOTE_DIST_ARCHIVE_TAR_FILE $REMOTE_DIST_DIR
+            rm -rf $REMOTE_DIST_DIR
+
+      
+
