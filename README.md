@@ -9,7 +9,7 @@ maybe further into the future even some CI/CD or code review benefits
 
 ## how to run
 1. run `cp .env.example .env` and modify the `.env` file to include the correct secrets
-2. run `export $(cat .env | xargs)` to export env variables to your current environment
+2. run `export $(cat .env | sed 's/\r$//' | xargs)` to export env variables to your current environment
 3. run `docker compose up -d` to run container locally
   a. `-d` is for detached mode (runs in background)
   b. `docker compose down` will shutdown container
