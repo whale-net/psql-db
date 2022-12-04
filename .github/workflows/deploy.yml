@@ -81,9 +81,11 @@ jobs:
           key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
           port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
           envs: REMOTE_DIST_DIR, REMOTE_DIST_ARCHIVE_DIR, REMOTE_DIST_ARCHIVE_TAR_FILE
+          # hopefulyl this rm-rf will never bite us :)
           script: |
             mkdir -p $REMOTE_DIST_ARCHIVE_DIR
             tar -cvzf $REMOTE_DIST_ARCHIVE_TAR_FILE $REMOTE_DIST_DIR
+            rm -rf $REMOTE_DIST_DIR
 
       # - name: run docker compose on server
       #   uses: appleboy/ssh-action@master
