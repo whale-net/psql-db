@@ -72,8 +72,19 @@ jobs:
             git clone git@github.com.whalenet.psql-db:whale-net/psql-db.git
             cd psql-db
             git fetch origin
-            git checkout ${{ github.event.after }}      
+            git checkout ${{ github.event.after }}
 
+      - name: copy files over
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.WHALE_NET_PROD_IP }}
+          username: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
+          key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
+          envs: REMOTE_DIST_DIR
+          script: |
+            mkdir ~/psql-db
+            rsync -a $REMOTE_DIST_DIR/psql-db ~/psql-db
 
       # # repo assumed cloned, otherwise login and clone first time
       # # git clone git@github.com.whalenet.psql-db:whale-net/psql-db.git
