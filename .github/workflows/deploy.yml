@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      REMOTE_DIST_DIR: ~/github-actions/dist/${{ github.run_id }}_${{ github.run_number }}_${{ github.run_attempt }}
+      REMOTE_DIST_DIR: ./.github-actions-temp/dist/${{ github.run_id }}_${{ github.run_number }}_${{ github.run_attempt }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
