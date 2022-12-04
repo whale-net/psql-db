@@ -26,34 +26,49 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+    env:
+      REMOTE_DIST_DIR: ~/github-actions/dist/${{ github.run_id }}_${{ github.run_number }}_${{ github.run_attempt }}
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    
       # hopefully this doesn't expose anything :?
       # - name: Dump GitHub context
       #   env:
       #     GITHUB_CONTEXT: ${{ toJson(github) }}
       #   run: echo "$GITHUB_CONTEXT"
 
-      - name: init
-        run: |
-          mkdir $GITHUB_WORKSPACE/dist
+      # - name: init
+      #   run: |
+      #     mkdir $GITHUB_WORKSPACE/
 
-      - name: checkout repo
-        uses: actions/checkout@v3
+      # - name: checkout repo
+      #   uses: actions/checkout@v3
+      #   with:
+      #     path: $GITHUB_WORKSPACE/dist
+
+      # - name : rsync repo with server
+      #   env:
+      #     HOST: ${{ secrets.WHALE_NET_PROD_IP }}
+      #     USERNAME: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
+      #     key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
+      #     PORT: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
+      #   run:
+      #       rsync -avz -e "ssh -p $PORT -o StrictHostKeyChecking=no" $GITHUB_WORKSPACE/dist $USERNAME@$HOST:~/test
+
+
+      - name: pull repo on server
+        uses: appleboy/ssh-action@master
         with:
-          path: $GITHUB_WORKSPACE/dist
-
-      - name : rsync repo with server
-        env:
-          HOST: ${{ secrets.WHALE_NET_PROD_IP }}
-          USERNAME: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
+          host: ${{ secrets.WHALE_NET_PROD_IP }}
+          username: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
           key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
-          PORT: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
-        run:
-            rsync -avz -e "ssh -p $PORT -o StrictHostKeyChecking=no" $GITHUB_WORKSPACE/dist $USERNAME@$HOST:~/test
-
-
-      
+          port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
+          script: |
+            mkdir -p $REMOTE_DIST_DIR
+            cd $REMOTE_DIST_DIR
+            git fetch origin
+            git checkout ${{ github.event.after }}      
 
 
       # # repo assumed cloned, otherwise login and clone first time
