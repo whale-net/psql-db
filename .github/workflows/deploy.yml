@@ -22,7 +22,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  deploy:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -53,7 +53,9 @@ jobs:
           username: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
           key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
           port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
+          # unsure if chmod is good idea, but whatever
           script: |
             cd psql-db
-            sh ./scripts/deploy
+            chmod +x ./scripts/deploy
+            ./scripts/deploy
 
