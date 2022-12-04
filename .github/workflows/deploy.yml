@@ -65,6 +65,7 @@ jobs:
           key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
           port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
           script: |
+            echo $REMOTE_DIST_DIR
             mkdir -p $REMOTE_DIST_DIR
             cd $REMOTE_DIST_DIR
             git fetch origin
