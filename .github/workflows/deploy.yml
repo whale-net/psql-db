@@ -69,6 +69,7 @@ jobs:
             echo $REMOTE_DIST_DIR
             mkdir -p $REMOTE_DIST_DIR
             cd $REMOTE_DIST_DIR
+            pwd
             git fetch origin
             git checkout ${{ github.event.after }}      
 
