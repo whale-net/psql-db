@@ -15,3 +15,6 @@ maybe further into the future even some CI/CD or code review benefits
   b. `docker compose down` will shutdown container
   c. flyway will run a migration whenever you run `docker compose up`. this will bring your local database up to date with whatever this repo has
   d. database port that is publically made accessible is `11420`. this is routed to `5432` internally within the container
+
+## flyway naming scheme
+https://flywaydb.org/documentation/concepts/migrations#naming
