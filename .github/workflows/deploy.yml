@@ -38,4 +38,5 @@ jobs:
           script: |
             echo 'hello world'
             date >> test.times
+            ./scripts/deploy
 
