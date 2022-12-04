@@ -44,7 +44,7 @@ jobs:
           key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
           PORT: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
         run:
-            rsync . $USERNAME@$HOST:~/test
+            rsync -avz -e "ssh --port=$PORT" . $USERNAME@$HOST:~/test
 
 
       
