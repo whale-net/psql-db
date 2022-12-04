@@ -15,7 +15,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_DB=${POSTGRES_DB}
     ports:
-      - 11420:5432
+      - $POSTGRES_EXTERNAL_PORT:5432
     volumes:
       # map default postgres data directory to our local directory to persist after docker down
       - ./postgres-data:/var/lib/postgresql/data
