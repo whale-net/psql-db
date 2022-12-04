@@ -43,7 +43,7 @@ jobs:
           # but we'll cross that bridge if we ever get there
           script: |
             cd psql-db
-            git checkout {{ github.sha }}
+            git checkout ${{ github.sha }}
             git pull
 
       - name: run docker compose on server
