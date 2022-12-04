@@ -41,24 +41,6 @@ jobs:
       #     GITHUB_CONTEXT: ${{ toJson(github) }}
       #   run: echo "$GITHUB_CONTEXT"
 
-      # - name: init
-      #   run: |
-      #     mkdir $GITHUB_WORKSPACE/
-
-      # - name: checkout repo
-      #   uses: actions/checkout@v3
-      #   with:
-      #     path: $GITHUB_WORKSPACE/dist
-
-      # - name : rsync repo with server
-      #   env:
-      #     HOST: ${{ secrets.WHALE_NET_PROD_IP }}
-      #     USERNAME: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
-      #     key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
-      #     PORT: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
-      #   run:
-      #       rsync -avz -e "ssh -p $PORT -o StrictHostKeyChecking=no" $GITHUB_WORKSPACE/dist $USERNAME@$HOST:~/test
-
       # pull repo on server vs github server to save bandwidth/storage
       - name: pull repo on server
         uses: appleboy/ssh-action@master
@@ -88,7 +70,6 @@ jobs:
           envs: REMOTE_DIST_DIR
           # double 
           script: |
-            echo $REMOTE_DIST_DIR
             mkdir -p ~/psql-db
             rsync -a --exclude '.git' $REMOTE_DIST_DIR/psql-db ~/
 
@@ -103,25 +84,6 @@ jobs:
           script: |
             mkdir -p $REMOTE_DIST_ARCHIVE_DIR
             tar -cvzf $REMOTE_DIST_DIR $REMOTE_DIST_ARCHIVE_TAR_FILE
-        
-
-      # # repo assumed cloned, otherwise login and clone first time
-      # # git clone git@github.com.whalenet.psql-db:whale-net/psql-db.git
-      # # using deploy key on server with .ssh/config
-      # - name: pull repo on server
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{ secrets.WHALE_NET_PROD_IP }}
-      #     username: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
-      #     key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
-      #     port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
-      #     # unsure if I need to checkout specific sha, but probably not a bad idea in case many pushes to master
-      #     # if local is ever chagned or we have merge conflict, may be tricky, can use rsync in that case I guess
-      #     # but we'll cross that bridge if we ever get there
-      #     script: |
-      #       cd psql-db
-      #       git fetch origin
-      #       git checkout ${{ github.event.after }}
 
       # - name: run docker compose on server
       #   uses: appleboy/ssh-action@master
