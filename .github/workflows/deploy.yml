@@ -28,10 +28,12 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
+      # hopefully this doesn't expose anything :?
+      # - name: Dump GitHub context
+      #   env:
+      #     GITHUB_CONTEXT: ${{ toJson(github) }}
+      #   run: echo "$GITHUB_CONTEXT"
+
       # repo assumed cloned, otherwise login and clone first time
       # git clone git@github.com.whalenet.psql-db:whale-net/psql-db.git
       # using deploy key on server with .ssh/config
@@ -48,7 +50,7 @@ jobs:
           script: |
             cd psql-db
             git fetch origin
-            git checkout ${{ github.sha }}
+            git checkout ${{ github.event.after }}
 
       - name: run docker compose on server
         uses: appleboy/ssh-action@master
