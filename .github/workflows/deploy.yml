@@ -28,6 +28,10 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
       # repo assumed cloned, otherwise login and clone first time
       # git clone git@github.com.whalenet.psql-db:whale-net/psql-db.git
       # using deploy key on server with .ssh/config
