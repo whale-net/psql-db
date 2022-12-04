@@ -69,7 +69,8 @@ jobs:
             echo $REMOTE_DIST_DIR
             mkdir -p $REMOTE_DIST_DIR
             cd $REMOTE_DIST_DIR
-            pwd
+            git clone git@github.com.whalenet.psql-db:whale-net/psql-db.git
+            cd psql-db
             git fetch origin
             git checkout ${{ github.event.after }}      
 
