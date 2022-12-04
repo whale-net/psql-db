@@ -1,3 +1,3 @@
 
 INSERT INTO flyway_test.test_data (ID, test_val)
-VALUES ('ID?')
+VALUES (12341234, 'ID?')
