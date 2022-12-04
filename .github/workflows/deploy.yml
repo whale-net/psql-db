@@ -64,6 +64,7 @@ jobs:
           username: ${{ secrets.WHALE_NET_PROD_DEPLOY_USERNAME }}
           key: ${{ secrets.WHALE_NET_PROD_SSH_PRIVATE_KEY }}
           port: ${{ secrets.WHALE_NET_PROD_SSH_PORT }}
+          envs: REMOTE_DIST_DIR
           script: |
             echo $REMOTE_DIST_DIR
             mkdir -p $REMOTE_DIST_DIR
